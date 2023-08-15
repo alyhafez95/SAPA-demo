@@ -174,8 +174,8 @@ def gene_genie(species_list = [],
     '''
     try:
         #  dim_gene & dim_gene_synonym from rdm database
-        dim_gene = spark.read.load('/mnt/dev-zone2/delta/rdm/database/metadata/dim_gene', format = 'delta')
-        dim_gene_synonym = spark.read.load('/mnt/dev-zone2/delta/rdm/database/metadata/dim_gene_synonym', format = 'delta')
+        dim_gene = spark.read.load(gene_data_path, format = 'delta')
+        dim_gene_synonym = spark.read.load(gene_synonyms_path, format = 'delta')
 
         # dict to map species with their common name 
         species_dict = {'human': 'homo_sapiens_core_100_38',
@@ -230,7 +230,7 @@ def gene_genie(species_list = [],
             dim_gene = dim_gene.filter(F.col(f'{key}').isin(value))
         
     except Exception as e:
-        return log_exception(prod = False, source = 'dim_gene', process_id = None, batch_id = None, workflow = 'gene_annotation',
+        return log_exception(prod = False, source = 'gene', process_id = None, batch_id = None, workflow = 'gene_annotation',
                               function = "gene_genie()", exception = e)
       
     return dim_gene
