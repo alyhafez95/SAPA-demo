@@ -1,11 +1,18 @@
 # Databricks notebook source
 import pyspark.sql.functions as F
 from pyspark.sql.types import *
+import yaml
+
+# COMMAND ----------
+
+with open('config.yaml', 'r') as file:
+    params = yaml.safe_load(file)
+locals().update(params)
 
 # COMMAND ----------
 
 # all depmap samples' metadata
-sample_metadata = spark.read.csv('/mnt/dev-zone0/csv/rdm/depmap/sample_info', header=True)
+sample_metadata = spark.read.csv(sample_metadata_path, header=True)
 display(sample_metadata)
 
 # COMMAND ----------
@@ -23,7 +30,7 @@ fig.show()
 
 # COMMAND ----------
 
-expression_levels = spark.read.load('/mnt/dev-zone1/parquet/rdm/depmap/expression_levels', format='parquet')
+expression_levels = spark.read.load(expression_levels_path, format='parquet')
 display(expression_levels)
 
 # COMMAND ----------
@@ -115,14 +122,14 @@ fig.show()
 # COMMAND ----------
 
 # load genes table
-gene_data = spark.read.load('/mnt/dev-zone2/parquet/rdm/database/rdm_metadata_dev/dim_gene', format='parquet')
+gene_data = spark.read.load(gene_data_path, format='parquet')
 print(gene_data.count())
 gene_data.display()
 
 # COMMAND ----------
 
 # load table of genes synonyms 
-gene_synonyms = spark.read.load('/mnt/dev-zone2/parquet/rdm/database/rdm_metadata_dev/dim_gene_synonym', format='parquet')
+gene_synonyms = spark.read.load(gene_synonyms_path, format='parquet')
 print(gene_synonyms.count())
 gene_synonyms.display()
 
@@ -321,7 +328,7 @@ fig.show()
 # samples_expression_levels_fact_final.write.saveAsTable('DepMap_samples_expression_levels',
 #                               format = 'delta',
 #                               mode = 'append',
-#                               path = '/mnt/dev-zone2/delta/warehouse/DepMap_samples_expression_levels')
+#                               path = depmap_expression_fact_path)
 
 # COMMAND ----------
 
