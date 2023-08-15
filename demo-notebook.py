@@ -73,8 +73,20 @@ samples_expression_levels_pd = sample_metadata_pd.join(expression_levels_pd.set_
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC
+# MAGIC its not bad actually; 15 seconds is longer than 0.3 seconds but its not an eternity.  
+# MAGIC lets push it a little more by doing a self-join on the samples_gene_expression df 26m on 26m (very expensive operation)
+
+# COMMAND ----------
+
 samples_expression_levels_pd = samples_expression_levels_pd.join(samples_expression_levels_pd.set_index('depmap_id'), on='depmap_id', how='inner')
 
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC looks like pandas wasnt able to efficiently process this join and ran out of memmory. lets see how spark preforms:
 
 # COMMAND ----------
 
